@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
+
 import com.techie.microservices.menu.dto.common.PagingDto;
 import com.techie.microservices.menu.dto.common.PagingRequestParameters;
 import com.techie.microservices.menu.dto.parameters.ProductParameters;
@@ -99,5 +101,10 @@ public class ProductRepository extends RepositoryBase<Product, Long> implements 
         for (Long id : ids) {
             deleteProduct(id);
         }
+    }
+
+    @Override
+    public List<Product> findAll() {
+        return List.of();
     }
 }

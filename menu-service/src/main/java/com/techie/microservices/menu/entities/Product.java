@@ -1,10 +1,7 @@
 package com.techie.microservices.menu.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.*;
+
 
 import com.techie.microservices.menu.entities.base.EntityAuditBase;
 import jakarta.persistence.*;
@@ -15,10 +12,14 @@ import jakarta.persistence.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product extends EntityAuditBase<Long> {
+public class Product extends EntityAuditBase{
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false, unique = true)
-    private int productId;
+    private Integer  productId;
 
     @Column(nullable = false, length = 100)
     private String value;
@@ -31,15 +32,15 @@ public class Product extends EntityAuditBase<Long> {
     private Model model;
 
     @Column(nullable = false)
-    private int uomId;
+    private Integer  uomId;
 
-    private int cartonQty;
+    private Integer  cartonQty;
 
     @Column(length = 50)
     private String cartonName;
 
-    private int cartonCharQty;
-    private int cartonLabelQty;
+    private Integer cartonCharQty;
+    private Integer cartonLabelQty;
 
     @Column(length = 2)
     private String active;

@@ -1,5 +1,7 @@
 package com.techie.microservices.menu.dto.common;
 
+import lombok.Data;
+
 @Data
 public class PagingRequestParameters {
     private static final int MAX_PAGE_SIZE = 50;

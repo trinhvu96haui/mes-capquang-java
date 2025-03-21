@@ -2,9 +2,14 @@ package com.techie.microservices.menu.dto.requests;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 public class CreateProductDto {
@@ -12,13 +17,13 @@ public class CreateProductDto {
     private Integer productId;
 
     @NotNull
-    @Max(100)
+    @Size(max = 100)
     private String value;
 
     private String createdBy;
 
     @NotNull
-    @Max(200)
+    @Size(max = 200)
     private String name;
 
     @NotNull
@@ -29,5 +34,10 @@ public class CreateProductDto {
 
     private String active;
     private String type;
+
+//    public Integer getProductId() {
+//        return this.productId;
+//    }
+
 }
 

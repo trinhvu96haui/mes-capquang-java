@@ -2,6 +2,7 @@ package com.techie.microservices.menu.infrastructure.common;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import java.io.Serializable;
 import java.util.List;
@@ -24,7 +25,6 @@ public abstract class RepositoryBase<T, K extends Serializable> implements IRepo
         return Optional.ofNullable(entityManager.find(entityClass, id));
     }
 
-    @Override
     public List<T> findAll(boolean trackChanges) {
         String jpql = "SELECT e FROM " + entityClass.getSimpleName() + " e";
         TypedQuery<T> query = entityManager.createQuery(jpql, entityClass);

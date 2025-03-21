@@ -3,6 +3,10 @@ package com.techie.microservices.menu.entities;
 import jakarta.persistence.*;
 import java.util.List;
 import com.techie.microservices.menu.entities.base.EntityAuditBase;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "model")
@@ -10,7 +14,11 @@ import com.techie.microservices.menu.entities.base.EntityAuditBase;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Model extends EntityAuditBase<Long> {
+public class Model extends EntityAuditBase{
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "value", length = 100, nullable = false)
     private String value;

@@ -2,10 +2,12 @@ package com.techie.microservices.menu.entities.base;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
+
+import java.io.Serializable;
 import java.time.Instant;
 
 @MappedSuperclass
-public abstract class EntityAuditBase<T extends Serializable> extends EntityBase<T> {
+public abstract class EntityAuditBase{
 
     @Column(name = "created_by", length = 100, nullable = false)
     private String createdBy;

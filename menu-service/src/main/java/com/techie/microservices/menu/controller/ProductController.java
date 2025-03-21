@@ -6,12 +6,13 @@ import com.techie.microservices.menu.dto.requests.UpdateProductDto;
 import com.techie.microservices.menu.dto.responses.ProductDto;
 import com.techie.microservices.menu.services.interfaces.IProductService;
 import com.techie.microservices.menu.dto.common.PagingDto;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.constraints.NotNull;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/products")
@@ -19,11 +20,9 @@ import jakarta.validation.constraints.NotNull;
 public class ProductController {
 
     private final IProductService productService;
-    private final ModelMapper modelMapper;
 
-    public ProductController(IProductService productService, ModelMapper modelMapper) {
+    public ProductController(IProductService productService) {
         this.productService = productService;
-        this.modelMapper = modelMapper;
     }
 
     // Lấy danh sách sản phẩm có phân trang
@@ -35,7 +34,7 @@ public class ProductController {
 
     // Lấy sản phẩm theo ID
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDto> getProduct(@PathVariable @NotNull Long id) {
+    public ResponseEntity<Optional<ProductDto>> getProduct(@PathVariable @NotNull Long id) {
         var result = productService.getById(id);
         return ResponseEntity.ok(result);
     }
