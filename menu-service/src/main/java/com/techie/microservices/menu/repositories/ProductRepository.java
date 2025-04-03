@@ -8,6 +8,7 @@ import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -30,10 +31,18 @@ public class ProductRepository extends RepositoryBase<Product, Long> implements 
     public PagingDto<Product> getProducts(ProductParameters parameters) {
         Stream<Product> query = findAll().stream();
 
-        return new QueryableExtensions<>(query)
+        // Áp dụng điều kiện tìm kiếm theo keyword nếu có sử dụng whereIf
+        query = new QueryableExtensions<>(query)
                 .whereIf(parameters.getKeyword() != null,
                         p -> p.getName().toLowerCase().contains(parameters.getKeyword().toLowerCase()) ||
                                 p.getValue().toLowerCase().contains(parameters.getKeyword().toLowerCase()))
+                .getStream(); // Lấy lại stream sau khi lọc từ whereIf
+
+        // Áp dụng sắp xếp giảm dần theo trường Created
+        query = query.sorted(Comparator.comparing(Product::getCreated).reversed());
+
+        // Tiến hành phân trang và trả về kết quả
+        return new QueryableExtensions<>(query)
                 .paginate(parameters);
     }
 
@@ -103,8 +112,8 @@ public class ProductRepository extends RepositoryBase<Product, Long> implements 
         }
     }
 
-    @Override
-    public List<Product> findAll() {
-        return List.of();
-    }
+//    @Override
+//    public List<Product> findAll() {
+//        return List.of();
+//    }
 }

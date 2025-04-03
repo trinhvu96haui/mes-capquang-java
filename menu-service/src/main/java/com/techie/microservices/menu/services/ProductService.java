@@ -6,13 +6,17 @@ import com.techie.microservices.menu.dto.requests.CreateProductDto;
 import com.techie.microservices.menu.dto.requests.UpdateProductDto;
 import com.techie.microservices.menu.dto.responses.ProductDto;
 import com.techie.microservices.menu.entities.Product;
+import com.techie.microservices.menu.exceptions.ResponseException;
 import com.techie.microservices.menu.extensions.AutoMapperExtension;
+import com.techie.microservices.menu.repositories.interfaces.IModelRepository;
 import com.techie.microservices.menu.repositories.interfaces.IProductRepository;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import com.techie.microservices.menu.services.interfaces.IProductService;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,11 +24,13 @@ import java.util.Optional;
 @Service
 public class ProductService implements IProductService {
     private final IProductRepository repository;
+    private final IModelRepository modelRepository;
     private final ModelMapper mapper;
     private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
 
-    public ProductService(IProductRepository repository, ModelMapper mapper) {
+    public ProductService(IProductRepository repository, IModelRepository modelRepository, ModelMapper mapper) {
         this.repository = repository;
+        this.modelRepository = modelRepository;
         this.mapper = mapper;
     }
 
@@ -35,7 +41,7 @@ public class ProductService implements IProductService {
             return AutoMapperExtension.mapPagingList(pagging, ProductDto.class);
         } catch (Exception e) {
             logger.error("Error Get Product by model Id: {} : {}", query.getModelId(), e.getMessage());
-            throw e;
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi hệ thống, vui lòng thử lại sau!", e);
         }
     }
 
@@ -49,12 +55,15 @@ public class ProductService implements IProductService {
         try {
             Optional<Product> productByValue = repository.findByProductId(model.getProductId());
             if (productByValue.isPresent()) {
-                throw new RuntimeException("Product ID already exists: " + model.getProductId());
+                throw new ResponseException("Product ID already exists: " + model.getProductId());
             }
             Product entity = mapper.map(model, Product.class);
+            // Tìm Model từ modelId
+            var modelEntity = modelRepository.findById(Long.valueOf(model.getModelId())).orElseThrow(() -> new ResponseException("Model id do not exits"));
+            entity.setModel(modelEntity);
             repository.createProduct(entity);
             return mapper.map(entity, ProductDto.class);
-        } catch (Exception e) {
+        } catch (ResponseException e) {
             logger.error("Error creating product: {}", e.getMessage());
             throw e;
         }
@@ -65,13 +74,13 @@ public class ProductService implements IProductService {
         try {
             Optional<Product> productOpt = repository.findById(id);
             if (productOpt.isEmpty()) {
-                throw new RuntimeException("Product not found");
+                throw new ResponseException("Product not found");
             }
             Product product = productOpt.get();
             mapper.map(productDto, product);
             repository.updateProduct(product);
             return true;
-        } catch (Exception e) {
+        } catch (ResponseException e) {
             logger.error("Error updating product {}: {}", id, e.getMessage());
             throw e;
         }
@@ -82,7 +91,7 @@ public class ProductService implements IProductService {
         try {
             repository.deleteProduct(id);
             return true;
-        } catch (Exception e) {
+        } catch (ResponseException e) {
             logger.error("Error deleting product {}: {}", id, e.getMessage());
             throw e;
         }

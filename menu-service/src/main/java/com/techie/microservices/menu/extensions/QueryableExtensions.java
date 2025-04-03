@@ -34,5 +34,9 @@ public class QueryableExtensions<T> {
 
         return new PagingDto<>(paginatedData, total, pageIndex, pageSize);
     }
+
+    public Stream<T> getStream() {
+        return query;
+    }
 }
 

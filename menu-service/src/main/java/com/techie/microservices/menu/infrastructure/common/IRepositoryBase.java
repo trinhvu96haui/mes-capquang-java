@@ -1,8 +1,5 @@
 package com.techie.microservices.menu.infrastructure.common;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;

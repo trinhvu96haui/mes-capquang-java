@@ -2,11 +2,15 @@ package com.techie.microservices.menu.entities.base;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.Instant;
 
 @MappedSuperclass
+@Getter
+@Setter
 public abstract class EntityAuditBase{
 
     @Column(name = "created_by", length = 100, nullable = false)
@@ -20,6 +24,4 @@ public abstract class EntityAuditBase{
 
     @Column(name = "updated")
     private Instant updated;
-
-    // Getters & Setters
 }

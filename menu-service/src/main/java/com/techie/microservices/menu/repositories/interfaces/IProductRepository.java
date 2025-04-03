@@ -5,7 +5,6 @@ import com.techie.microservices.menu.entities.Product;
 import java.util.List;
 import java.util.Optional;
 import com.techie.microservices.menu.dto.common.PagingDto;
-import com.techie.microservices.menu.dto.common.PagingRequestParameters;
 import com.techie.microservices.menu.dto.parameters.ProductParameters;
 
 public interface IProductRepository extends IRepositoryBase<Product, Long> {

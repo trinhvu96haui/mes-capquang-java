@@ -6,12 +6,14 @@ import com.techie.microservices.menu.dto.requests.UpdateProductDto;
 import com.techie.microservices.menu.dto.responses.ProductDto;
 import com.techie.microservices.menu.services.interfaces.IProductService;
 import com.techie.microservices.menu.dto.common.PagingDto;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.constraints.NotNull;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -27,7 +29,7 @@ public class ProductController {
 
     // Lấy danh sách sản phẩm có phân trang
     @GetMapping
-    public ResponseEntity<PagingDto<ProductDto>> getProducts(ProductParameters parameters) {
+    public ResponseEntity<PagingDto<ProductDto>> getProducts(@ParameterObject ProductParameters parameters) {
         var result = productService.getAllPaging(parameters);
         return ResponseEntity.ok(result);
     }
@@ -59,6 +61,13 @@ public class ProductController {
     public ResponseEntity<Void> deleteProduct(@PathVariable @NotNull Long id) {
         productService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // Lấy sản phẩm theo productIds
+    @GetMapping("/find-by-productIds")
+    public ResponseEntity<List<ProductDto>> findByProducts(@RequestParam List<Integer> productIds) {
+        var result = productService.findByProductIds(productIds);
+        return ResponseEntity.ok(result);
     }
 }
 

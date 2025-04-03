@@ -25,6 +25,11 @@ public abstract class RepositoryBase<T, K extends Serializable> implements IRepo
         return Optional.ofNullable(entityManager.find(entityClass, id));
     }
 
+    @Override
+    public List<T> findAll() {
+        return findAll(true); // Mặc định dùng trackChanges = true
+    }
+
     public List<T> findAll(boolean trackChanges) {
         String jpql = "SELECT e FROM " + entityClass.getSimpleName() + " e";
         TypedQuery<T> query = entityManager.createQuery(jpql, entityClass);
