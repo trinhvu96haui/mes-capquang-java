@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
@@ -41,7 +42,6 @@ public abstract class RepositoryBase<T, K extends Serializable> implements IRepo
         return query.getResultList();
     }
 
-
     @Override
     public T save(T entity) {
         entityManager.persist(entity);
@@ -57,18 +57,6 @@ public abstract class RepositoryBase<T, K extends Serializable> implements IRepo
     }
 
     @Override
-    public void update(T entity) {
-        entityManager.merge(entity);
-    }
-
-    @Override
-    public void updateAll(List<T> entities) {
-        for (T entity : entities) {
-            entityManager.merge(entity);
-        }
-    }
-
-    @Override
     public void delete(T entity) {
         entityManager.remove(entityManager.contains(entity) ? entity : entityManager.merge(entity));
     }
@@ -78,10 +66,4 @@ public abstract class RepositoryBase<T, K extends Serializable> implements IRepo
         findById(id).ifPresent(this::delete);
     }
 
-    @Override
-    public void deleteAll(List<T> entities) {
-        for (T entity : entities) {
-            delete(entity);
-        }
-    }
 }

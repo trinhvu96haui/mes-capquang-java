@@ -34,10 +34,10 @@ public class ModelService implements IModelService {
     @Override
     public PagingDto<ModelDto> getAllPaging(ModelParameters query) {
         try {
-            var pagging = modelRepository.getModels(query);
-            return AutoMapperExtension.mapPagingList(pagging, ModelDto.class);
+            var paging = modelRepository.getModels(query);
+            return AutoMapperExtension.mapPagingList(paging, ModelDto.class);
         } catch (Exception e) {
-            logger.error("Error Get all model" + e.getMessage());
+            logger.error("Error Get all model{}", e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi hệ thống, vui lòng thử lại sau!", e);
         }
     }
@@ -50,14 +50,19 @@ public class ModelService implements IModelService {
     @Override
     public ModelDto createModel(CreateModelDto model) {
         try {
-            Optional<Model> modelByValue = modelRepository.findByModelId(model.getModelId());
+            Optional<Model> modelByValue = modelRepository.findByValue(model.getValue());
             if (modelByValue.isPresent()) {
+                throw new ResponseException("Model value already exists: " + model.getValue());
+            }
+
+            Optional<Model> modelByModelId = modelRepository.findByModelId(model.getModelId());
+            if (modelByModelId.isPresent()) {
                 throw new ResponseException("Model ID already exists: " + model.getModelId());
             }
             Model entity = mapper.map(model, Model.class);
-            modelRepository.createModel(entity);
+            modelRepository.create(entity);
             return mapper.map(entity, ModelDto.class);
-        } catch (ResponseException e) {
+        } catch (Exception e) {
             logger.error("Error creating model: {}", e.getMessage());
             throw e;
         }
@@ -66,15 +71,13 @@ public class ModelService implements IModelService {
     @Override
     public boolean updateModel(Long id, UpdateModelDto modelDto) {
         try {
-            Optional<Model> modelOpt = modelRepository.findById(id);
-            if (modelOpt.isEmpty()) {
-                throw new ResponseException("Model not found");
-            }
-            Model model = modelOpt.get();
+            Model model = modelRepository.findById(id).orElseThrow(() -> {
+                return new ResponseException("Model not found");
+            });
             mapper.map(modelDto, model);
-            modelRepository.updateModel(model);
+            modelRepository.update(model);
             return true;
-        } catch (ResponseException e) {
+        } catch (Exception e) {
             logger.error("Error updating model {}: {}", id, e.getMessage());
             throw e;
         }
@@ -83,9 +86,12 @@ public class ModelService implements IModelService {
     @Override
     public boolean deleteById(Long id) {
         try {
-            modelRepository.deleteModel(id);
+            Model model = modelRepository.findById(id).orElseThrow(() -> {
+                return new ResponseException("Model not found");
+            });
+            modelRepository.deleteById(id);
             return true;
-        } catch (ResponseException e) {
+        } catch (Exception e) {
             logger.error("Error deleting model {}: {}", id, e.getMessage());
             throw e;
         }

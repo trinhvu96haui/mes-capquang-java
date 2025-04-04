@@ -63,21 +63,29 @@ public class ProductRepository extends RepositoryBase<Product, Long> implements 
     }
 
     @Override
-    public List<Product> findByCodes(List<String> codes) {
-        TypedQuery<Product> query = entityManager.createQuery(
-                "SELECT p FROM Product p WHERE p.code IN :codes", Product.class);
-        query.setParameter("codes", codes);
+    public List<Product> findByValues(List<String> values) {
+        var sql = "SELECT p FROM Product p WHERE p.value IN :values";
+        TypedQuery<Product> query = entityManager.createQuery(sql, Product.class);
+        query.setParameter("values", values);
         return query.getResultList();
     }
 
     @Override
-    public Product createProduct(Product product) {
+    public Optional<Product> findByValue(String value) {
+        var sql = "SELECT p FROM Product p WHERE p.value = :value";
+        TypedQuery<Product> query = entityManager.createQuery(sql, Product.class);
+        query.setParameter("value", value);
+        return query.getResultList().stream().findFirst();
+    }
+
+    @Override
+    public Product create(Product product) {
         entityManager.persist(product);
         return product;
     }
 
     @Override
-    public List<Product> createManyProducts(List<Product> products) {
+    public List<Product> createMany(List<Product> products) {
         for (Product product : products) {
             entityManager.persist(product);
         }
@@ -85,12 +93,12 @@ public class ProductRepository extends RepositoryBase<Product, Long> implements 
     }
 
     @Override
-    public Product updateProduct(Product product) {
+    public Product update(Product product) {
         return entityManager.merge(product);
     }
 
     @Override
-    public List<Product> updateManyProducts(List<Product> products) {
+    public List<Product> updateMany(List<Product> products) {
         for (Product product : products) {
             entityManager.merge(product);
         }
@@ -98,7 +106,7 @@ public class ProductRepository extends RepositoryBase<Product, Long> implements 
     }
 
     @Override
-    public void deleteProduct(Long id) {
+    public void delete(Long id) {
         Product product = entityManager.find(Product.class, id);
         if (product != null) {
             entityManager.remove(product);
@@ -106,14 +114,10 @@ public class ProductRepository extends RepositoryBase<Product, Long> implements 
     }
 
     @Override
-    public void deleteManyProducts(List<Long> ids) {
+    public void deleteMany(List<Long> ids) {
         for (Long id : ids) {
-            deleteProduct(id);
+            delete(id);
         }
     }
 
-//    @Override
-//    public List<Product> findAll() {
-//        return List.of();
-//    }
 }

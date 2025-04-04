@@ -11,9 +11,14 @@ import java.util.Optional;
 
 public interface IProductService {
     PagingDto<ProductDto> getAllPaging(ProductParameters query);
+
     Optional<ProductDto> getById(Long id);
+
     boolean updateProduct(Long id, UpdateProductDto product);
+
     ProductDto createProduct(CreateProductDto model);
+
     boolean deleteById(Long id);
+
     List<ProductDto> findByProductIds(List<Integer> productIds);
 }

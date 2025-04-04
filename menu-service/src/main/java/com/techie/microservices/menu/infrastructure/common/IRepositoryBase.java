@@ -9,9 +9,6 @@ public interface IRepositoryBase<T, K extends Serializable> {
     List<T> findAll();
     T save(T entity);
     List<T> saveAll(List<T> entities);
-    void update(T entity);
-    void updateAll(List<T> entities);
     void delete(T entity);
     void deleteById(K id);
-    void deleteAll(List<T> entities);
 }

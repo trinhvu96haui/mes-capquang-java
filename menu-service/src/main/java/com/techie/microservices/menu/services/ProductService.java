@@ -37,8 +37,8 @@ public class ProductService implements IProductService {
     @Override
     public PagingDto<ProductDto> getAllPaging(ProductParameters query) {
         try {
-            var pagging = repository.getProducts(query);
-            return AutoMapperExtension.mapPagingList(pagging, ProductDto.class);
+            var paging = repository.getProducts(query);
+            return AutoMapperExtension.mapPagingList(paging, ProductDto.class);
         } catch (Exception e) {
             logger.error("Error Get Product by model Id: {} : {}", query.getModelId(), e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi hệ thống, vui lòng thử lại sau!", e);
@@ -53,17 +53,22 @@ public class ProductService implements IProductService {
     @Override
     public ProductDto createProduct(CreateProductDto model) {
         try {
-            Optional<Product> productByValue = repository.findByProductId(model.getProductId());
+            Optional<Product> productByValue = repository.findByValue(model.getValue());
             if (productByValue.isPresent()) {
-                throw new ResponseException("Product ID already exists: " + model.getProductId());
+                throw new ResponseException("Product value already exists: " + model.getValue());
+            }
+
+            Optional<Product> productByProductId = repository.findByProductId(model.getProductId());
+            if (productByProductId.isPresent()) {
+                throw new ResponseException("ProductId already exists: " + model.getProductId());
             }
             Product entity = mapper.map(model, Product.class);
             // Tìm Model từ modelId
             var modelEntity = modelRepository.findById(Long.valueOf(model.getModelId())).orElseThrow(() -> new ResponseException("Model id do not exits"));
             entity.setModel(modelEntity);
-            repository.createProduct(entity);
+            repository.create(entity);
             return mapper.map(entity, ProductDto.class);
-        } catch (ResponseException e) {
+        } catch (Exception e) {
             logger.error("Error creating product: {}", e.getMessage());
             throw e;
         }
@@ -72,15 +77,13 @@ public class ProductService implements IProductService {
     @Override
     public boolean updateProduct(Long id, UpdateProductDto productDto) {
         try {
-            Optional<Product> productOpt = repository.findById(id);
-            if (productOpt.isEmpty()) {
-                throw new ResponseException("Product not found");
-            }
-            Product product = productOpt.get();
+            Product product = repository.findById(id).orElseThrow(() -> {
+                return new ResponseException("Product not found");
+            });
             mapper.map(productDto, product);
-            repository.updateProduct(product);
+            repository.update(product);
             return true;
-        } catch (ResponseException e) {
+        } catch (Exception e) {
             logger.error("Error updating product {}: {}", id, e.getMessage());
             throw e;
         }
@@ -89,9 +92,12 @@ public class ProductService implements IProductService {
     @Override
     public boolean deleteById(Long id) {
         try {
-            repository.deleteProduct(id);
+            Product product = repository.findById(id).orElseThrow(() -> {
+                return new ResponseException("Product not found");
+            });
+            repository.delete(id);
             return true;
-        } catch (ResponseException e) {
+        } catch (Exception e) {
             logger.error("Error deleting product {}: {}", id, e.getMessage());
             throw e;
         }

@@ -52,21 +52,29 @@ public class ModelRepository extends RepositoryBase<Model, Long> implements IMod
     }
 
     @Override
-    public List<Model> findByCodes(List<String> codes) {
+    public List<Model> findByValues(List<String> values) {
         TypedQuery<Model> query = entityManager.createQuery(
-                "SELECT p FROM Model p WHERE p.value IN :codes", Model.class);
-        query.setParameter("codes", codes);
+                "SELECT p FROM Model p WHERE p.value IN :values", Model.class);
+        query.setParameter("values", values);
         return query.getResultList();
     }
 
     @Override
-    public Model createModel(Model model) {
+    public Optional<Model> findByValue(String value) {
+        TypedQuery<Model> query = entityManager.createQuery(
+                "SELECT p FROM Model p WHERE p.value = :value", Model.class);
+        query.setParameter("value", value);
+        return query.getResultList().stream().findFirst();
+    }
+
+    @Override
+    public Model create(Model model) {
         entityManager.persist(model);
         return model;
     }
 
     @Override
-    public List<Model> createManyModels(List<Model> models) {
+    public List<Model> createMany(List<Model> models) {
         for (Model model : models) {
             entityManager.persist(model);
         }
@@ -74,12 +82,12 @@ public class ModelRepository extends RepositoryBase<Model, Long> implements IMod
     }
 
     @Override
-    public Model updateModel(Model model) {
+    public Model update(Model model) {
         return entityManager.merge(model);
     }
 
     @Override
-    public List<Model> updateManyModels(List<Model> models) {
+    public List<Model> updateMany(List<Model> models) {
         for (Model model : models) {
             entityManager.merge(model);
         }
@@ -87,7 +95,7 @@ public class ModelRepository extends RepositoryBase<Model, Long> implements IMod
     }
 
     @Override
-    public void deleteModel(Long id) {
+    public void delete(Long id) {
         Model model = entityManager.find(Model.class, id);
         if (model != null) {
             entityManager.remove(model);
@@ -95,9 +103,9 @@ public class ModelRepository extends RepositoryBase<Model, Long> implements IMod
     }
 
     @Override
-    public void deleteManyModels(List<Long> ids) {
+    public void deleteMany(List<Long> ids) {
         for (Long id : ids) {
-            deleteModel(id);
+            delete(id);
         }
     }
 

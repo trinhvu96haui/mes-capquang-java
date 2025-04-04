@@ -10,15 +10,24 @@ import java.util.Optional;
 
 public interface IModelRepository extends IRepositoryBase<Model, Long> {
     PagingDto<Model> getModels(ModelParameters parameters);
+
     Optional<Model> findByModelId(int modelId);
+
     List<Model> findByModelIds(List<Integer> modelIds);
-    List<Model> findByCodes(List<String> codes);
 
-    Model createModel(Model model);
-    List<Model> createManyModels(List<Model> models);
-    Model updateModel(Model model);
-    List<Model> updateManyModels(List<Model> models);
+    List<Model> findByValues(List<String> values);
 
-    void deleteModel(Long id);
-    void deleteManyModels(List<Long> ids);
+    Optional<Model> findByValue(String value);
+
+    Model create(Model model);
+
+    List<Model> createMany(List<Model> models);
+
+    Model update(Model model);
+
+    List<Model> updateMany(List<Model> models);
+
+    void delete(Long id);
+
+    void deleteMany(List<Long> ids);
 }

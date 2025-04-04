@@ -1,11 +1,11 @@
 package com.techie.microservices.menu.config;
 
-import com.techie.microservices.menu.dto.requests.CreateModelDto;
-import com.techie.microservices.menu.dto.requests.CreateProductDto;
-import com.techie.microservices.menu.dto.requests.UpdateModelDto;
-import com.techie.microservices.menu.dto.requests.UpdateProductDto;
+import com.techie.microservices.menu.dto.requests.*;
+import com.techie.microservices.menu.dto.responses.GroupProcessDto;
 import com.techie.microservices.menu.dto.responses.ModelDto;
+import com.techie.microservices.menu.dto.responses.ProcessDto;
 import com.techie.microservices.menu.dto.responses.ProductDto;
+import com.techie.microservices.menu.entities.GroupProcess;
 import com.techie.microservices.menu.entities.Model;
 import com.techie.microservices.menu.entities.Product;
 import org.modelmapper.ModelMapper;
@@ -28,6 +28,14 @@ public class MapperConfig {
         modelMapper.createTypeMap(Model.class, ModelDto.class);
         modelMapper.createTypeMap(CreateModelDto.class, Model.class);
         modelMapper.createTypeMap(UpdateModelDto.class, Model.class);
+
+        modelMapper.createTypeMap(Process.class, ProcessDto.class);
+        modelMapper.createTypeMap(CreateProcessDto.class, Process.class);
+        modelMapper.createTypeMap(UpdateProcessDto.class, Process.class);
+
+        modelMapper.createTypeMap(GroupProcess.class, GroupProcessDto.class);
+        modelMapper.createTypeMap(CreateGroupProcessDto.class, GroupProcess.class);
+        modelMapper.createTypeMap(UpdateGroupProcessDto.class, GroupProcess.class);
 
         return modelMapper;
     }
