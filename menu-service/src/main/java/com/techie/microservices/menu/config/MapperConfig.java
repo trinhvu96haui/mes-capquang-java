@@ -1,10 +1,8 @@
 package com.techie.microservices.menu.config;
 
 import com.techie.microservices.menu.dto.requests.*;
-import com.techie.microservices.menu.dto.responses.GroupProcessDto;
-import com.techie.microservices.menu.dto.responses.ModelDto;
-import com.techie.microservices.menu.dto.responses.ProcessDto;
-import com.techie.microservices.menu.dto.responses.ProductDto;
+import com.techie.microservices.menu.dto.responses.*;
+import com.techie.microservices.menu.entities.FormLoad;
 import com.techie.microservices.menu.entities.GroupProcess;
 import com.techie.microservices.menu.entities.Model;
 import com.techie.microservices.menu.entities.Product;
@@ -36,6 +34,10 @@ public class MapperConfig {
         modelMapper.createTypeMap(GroupProcess.class, GroupProcessDto.class);
         modelMapper.createTypeMap(CreateGroupProcessDto.class, GroupProcess.class);
         modelMapper.createTypeMap(UpdateGroupProcessDto.class, GroupProcess.class);
+
+        modelMapper.createTypeMap(FormLoad.class, FormLoadDto.class);
+        modelMapper.createTypeMap(CreateFormLoadDto.class, FormLoad.class);
+        modelMapper.createTypeMap(UpdateFormLoadDto.class, FormLoad.class);
 
         return modelMapper;
     }
