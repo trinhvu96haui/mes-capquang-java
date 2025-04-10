@@ -2,14 +2,13 @@ package com.techie.microservices.menu.config;
 
 import com.techie.microservices.menu.dto.requests.*;
 import com.techie.microservices.menu.dto.responses.*;
-import com.techie.microservices.menu.entities.FormLoad;
-import com.techie.microservices.menu.entities.GroupProcess;
-import com.techie.microservices.menu.entities.Model;
-import com.techie.microservices.menu.entities.Product;
+import com.techie.microservices.menu.entities.*;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.lang.Process;
 
 @Configuration
 public class MapperConfig {
@@ -38,6 +37,10 @@ public class MapperConfig {
         modelMapper.createTypeMap(FormLoad.class, FormLoadDto.class);
         modelMapper.createTypeMap(CreateFormLoadDto.class, FormLoad.class);
         modelMapper.createTypeMap(UpdateFormLoadDto.class, FormLoad.class);
+
+        modelMapper.createTypeMap(CheckList.class, CheckListDto.class);
+        modelMapper.createTypeMap(CreateCheckListDto.class, CheckList.class);
+        modelMapper.createTypeMap(UpdateCheckListDto.class, CheckList.class);
 
         return modelMapper;
     }

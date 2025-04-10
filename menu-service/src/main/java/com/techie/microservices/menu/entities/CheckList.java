@@ -1,6 +1,6 @@
 package com.techie.microservices.menu.entities;
 
-import com.techie.microservices.menu.Enums.InputMethod;
+import com.techie.microservices.menu.Enums.CheckListType;
 import com.techie.microservices.menu.entities.base.EntityAuditBase;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,20 +8,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Entity
-@Table(name = "process")
+@Table(name = "check_list")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Process extends EntityAuditBase {
+public class CheckList extends EntityAuditBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private Integer processId;
+    @Column(name = "check_list_id", nullable = false, unique = true)
+    private Integer checkListId;
 
     @Column(name = "value", nullable = false, length = 100, columnDefinition = "varchar(100)")
     private String value;
@@ -29,12 +31,14 @@ public class Process extends EntityAuditBase {
     @Column(name = "name", nullable = false, length = 200, columnDefinition = "varchar(200)")
     private String name;
 
-    @Column(name = "status")
-    private Boolean status;
+    @Column(name = "min_value")
+    private BigDecimal minValue;
+
+    @Column(name = "max_value")
+    private BigDecimal maxValue;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "input_method",nullable = false)
-    private InputMethod inputMethod;
-
+    @Column(name = "type", nullable = false)
+    private CheckListType type;
 
 }

@@ -1,9 +1,13 @@
 package com.techie.microservices.menu.dto.requests;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.techie.microservices.menu.Enums.InputMethod;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -11,15 +15,16 @@ public class UpdateProcessDto {
     private String updatedBy;
 
     @NotNull
-    @Size(max = 200, message = "Maximum length for Product Name is 200 characters.")
+    @Size(max = 200, message = "Maximum length for Process Name is 200 characters.")
     private String name;
 
-    private String active;
+    @NotNull
+    private boolean status;
 
     @NotNull
-    private Integer formLoadId;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private InputMethod inputMethod;
 
-    @NotNull
-    private Integer processVmmsId;
+    private List<Integer> checkListIds;
 }
 
